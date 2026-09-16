@@ -614,3 +614,23 @@ class RecoveryTests(unittest.TestCase):
         from omavoice.session import recover_interrupted_takes
         with tempfile.TemporaryDirectory() as d:
             self.assertEqual(recover_interrupted_takes(Settings(recordings_dir=d)), [])
+
+
+class FinalPassFlagsTests(unittest.TestCase):
+    def test_final_pass_decodes_without_carried_context(self):
+        # Carried context makes whisper loop inside speech; measured on a real
+        # meeting recording. The final pass must always pass -mc 0.
+        from omavoice import whisper
+        with tempfile.TemporaryDirectory() as d:
+            work = Path(d)
+            raw = work / "master.raw"
+            raw.write_bytes(b"\x00\x00" * 16000)
+            (work / "final.json").write_text('{"transcription": []}')
+            done = mock.Mock(returncode=0, stdout="", stderr="")
+            model = whisper.Model(work / "ggml-base.en.bin")
+            with mock.patch.object(whisper, "raw_to_wav16k_file"), \
+                    mock.patch.object(whisper.subprocess, "run", return_value=done) as run:
+                whisper.transcribe_file(raw, model, 4, "en", work)
+            argv = run.call_args[0][0]
+            self.assertIn("-mc", argv)
+            self.assertEqual(argv[argv.index("-mc") + 1], "0")

@@ -2,6 +2,16 @@
 
 All notable changes to Omavoice. Dates are the day the tag was cut.
 
+## 0.3.13 - 2026-09-16
+
+- **The final transcript no longer loops inside real speech.** The saved
+  transcript was decoded with the previous text carried forward as context,
+  which lets whisper lock onto a sentence and repeat it. Voice activity
+  detection already stopped loops over silence, but not these. Measured on a
+  noisy 90-minute meetup recording: the old settings repeated one sentence 7
+  times in a 6.5-minute stretch, and the final pass now writes it once. Each
+  segment is decoded on its own (`-mc 0`).
+
 ## 0.3.12 — 2026-09-07
 
 - Fixed the 0.3.11 recovery tests, which called the real encoder and so failed

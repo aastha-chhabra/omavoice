@@ -400,8 +400,12 @@ def transcribe_file(raw_path: Path, model: Model, threads: int, language: str, w
         raise RuntimeError(f"ffmpeg could not run: {exc}") from exc
     out_prefix = workdir / "final"
     lang = "en" if model.english_only else (language or "auto")
+    # -mc 0: decode each segment without the previous text as context. With
+    # context, whisper falls into loops inside real speech, not just over
+    # silence: on a noisy 90-minute meeting it repeated one sentence 7 times
+    # where the context-free pass wrote it once. VAD alone does not stop that.
     cmd = ["whisper-cli", "-m", str(model.path), "-t", str(threads), "-l", lang, "-np", "-sns",
-           *vad_args(vad_model), "-oj", "-of", str(out_prefix), "-f", str(wav_path)]
+           "-mc", "0", *vad_args(vad_model), "-oj", "-of", str(out_prefix), "-f", str(wav_path)]
     proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
     json_path = out_prefix.with_suffix(".json")
     if proc.returncode != 0 or not json_path.exists():
