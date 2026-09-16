@@ -10,8 +10,9 @@ MIN_FLUSH_SECONDS = 0.6
 
 
 class LiveTranscriber:
-    def __init__(self, recorder, server, chunk_seconds: float, on_text, on_error, gate=None):
+    def __init__(self, recorder, server, chunk_seconds: float, on_text, on_error, gate=None, rewrite=None):
         self.recorder = recorder
+        self.rewrite = rewrite
         self.server = server
         self.gate = gate
         self.chunk_bytes = pcm.seconds_to_bytes(max(3.0, chunk_seconds))
@@ -75,6 +76,8 @@ class LiveTranscriber:
             return
         finally:
             self.busy = False
+        if text and self.rewrite is not None:
+            text = self.rewrite(text)
         if text:
             self.texts.append(text)
             self.on_text(text)

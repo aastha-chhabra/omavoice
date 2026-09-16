@@ -2,6 +2,16 @@
 
 All notable changes to Omavoice. Dates are the day the tag was cut.
 
+## 0.3.14 - 2026-09-16
+
+- **Words whisper keeps mishearing are corrected.** "Omaki", "Omarchi" and
+  "Amarty" now come out as Omarchy, and "Hyperland" as Hyprland, in live
+  captions and the saved transcript. Add your own terms under `vocabulary` in
+  the config. A vocabulary prompt was tried first and rejected: it only reaches
+  whisper through the text context that 0.3.13 turned off to stop loops, and
+  every context budget measured fixed some mishearings, missed others, and
+  reopened the loop risk.
+
 ## 0.3.13 - 2026-09-16
 
 - **The final transcript no longer loops inside real speech.** The saved

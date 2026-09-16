@@ -634,3 +634,60 @@ class FinalPassFlagsTests(unittest.TestCase):
             argv = run.call_args[0][0]
             self.assertIn("-mc", argv)
             self.assertEqual(argv[argv.index("-mc") + 1], "0")
+
+
+class VocabularyTests(unittest.TestCase):
+    """Real mishearings from the OATLUG #2 recording, 2026-09-15."""
+
+    def test_default_terms_are_corrected(self):
+        from omavoice.vocabulary import Corrector
+        fix = Corrector().apply
+        self.assertEqual(fix("says Omaki or Omarchi or some variant"), "says Omarchy or Omarchy or some variant")
+        self.assertEqual(fix("Put your Amarty screen on"), "Put your Omarchy screen on")
+        self.assertEqual(fix("the try Omarze thing"), "the try Omarchy thing")
+        self.assertEqual(fix("running Hyper land now"), "running Hyprland now")
+
+    def test_whole_words_only(self):
+        from omavoice.vocabulary import Corrector
+        fix = Corrector().apply
+        self.assertEqual(fix("Infomaki and omakase and Omaha"), "Infomaki and omakase and Omaha")
+        self.assertEqual(fix("Omarchy stays Omarchy"), "Omarchy stays Omarchy")
+
+    def test_user_vocabulary_adds_and_the_longest_match_wins(self):
+        from omavoice.vocabulary import Corrector
+        fix = Corrector({
+            "omarchy.nixfred.com": ["omarchi.nickstread.com", "omachi.nickspread.com"],
+            "Infomarchy": ["Infomaki", "Infomarchie"],
+            "nixfred.com": ["nickstread.com"],
+        }).apply
+        self.assertEqual(fix("So go to omarchi.nickstread.com."), "So go to omarchy.nixfred.com.")
+        self.assertEqual(fix("Yeah, this is Infomarchie."), "Yeah, this is Infomarchy.")
+        self.assertEqual(fix("visit nickstread.com"), "visit nixfred.com")
+
+    def test_malformed_config_is_ignored_not_fatal(self):
+        from omavoice.vocabulary import Corrector
+        for bad in (None, [], "Omarchy", {"x": "not a list"}, {5: ["a"]}, {"": ["a"]}, {"t": [None, 3]}):
+            self.assertEqual(Corrector(bad).apply("Omaki"), "Omarchy")
+
+    def test_live_captions_are_corrected_before_they_are_kept(self):
+        from omavoice import live as live_module
+        from omavoice.vocabulary import Corrector
+        shown = []
+        server = mock.Mock()
+        server.transcribe.return_value = "switching over to Omaki"
+        worker = live_module.LiveTranscriber(mock.Mock(), server, 7.0, on_text=shown.append,
+                                             on_error=self.fail, gate=None, rewrite=Corrector().apply)
+        with mock.patch.object(live_module.pcm, "is_silent", return_value=False), \
+                mock.patch.object(live_module, "pcm_to_wav16k", return_value=b"RIFF"):
+            worker._process(b"\x01\x00" * 4800)
+        self.assertEqual(shown, ["switching over to Omarchy"])
+        self.assertEqual(worker.texts, ["switching over to Omarchy"])
+
+    def test_settings_carry_a_vocabulary(self):
+        from omavoice.config import Settings
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "config.json"
+            Settings(vocabulary={"OATLUG": ["oat lug"]}).save(path)
+            self.assertEqual(Settings.load(path).vocabulary, {"OATLUG": ["oat lug"]})
+            path.write_text('{"vocabulary": "wrong type"}')
+            self.assertEqual(Settings.load(path).vocabulary, {})

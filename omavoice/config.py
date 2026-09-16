@@ -36,6 +36,7 @@ class Settings:
     chunk_seconds: float = 7.0         # live caption chunk length
     threads: int = 0                   # 0 = pick automatically
     timestamps: bool = False           # write [hh:mm:ss] per segment in the transcript
+    vocabulary: dict = field(default_factory=dict)  # term -> ways it gets misheard; adds to the defaults
     pause_media: bool = True           # pause MPRIS players while recording
     window_width: int = 760
     window_height: int = 820

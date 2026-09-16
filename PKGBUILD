@@ -1,6 +1,6 @@
 # Maintainer: Fred Nix <frednix@gmail.com>
 pkgname=omavoice
-pkgver=0.3.13
+pkgver=0.3.14
 pkgrel=1
 pkgdesc="Voice recorder with live transcription for Omarchy (GTK4, PipeWire, whisper.cpp)"
 arch=('any')

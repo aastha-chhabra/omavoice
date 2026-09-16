@@ -22,6 +22,7 @@ from omavoice.live import LiveTranscriber
 from omavoice.naming import basename, transcript_path_for, unique_basename
 from omavoice.pcm import bytes_to_seconds
 from omavoice.recorder import Recorder, RecorderError
+from omavoice.vocabulary import Corrector
 
 MIN_SECONDS = 0.5
 
@@ -158,6 +159,7 @@ class Session:
         # this one is still encoding must not redirect where it saves or which
         # model it finishes with.
         self.settings = replace(settings)
+        self.corrector = Corrector(self.settings.vocabulary)
         self.engine = engine
         self.cb = callbacks  # on_status, on_live_text, on_saved, on_error, on_engine
         self.recorder = Recorder()
@@ -226,7 +228,7 @@ class Session:
         gate = vad.SpeechGate(self.engine.vad_model, threads=max(2, self.settings.effective_threads() // 2))
         worker = LiveTranscriber(self.recorder, server, self.settings.chunk_seconds,
                                  on_text=self.cb["on_live_text"], on_error=self.cb["on_error"],
-                                 gate=gate)
+                                 gate=gate, rewrite=self.corrector.apply)
         with self._live_lock:
             # Stop may have run while the model was loading. Publishing the
             # worker now would leave one nobody ever stops. Starting it inside
@@ -403,6 +405,7 @@ class Session:
             segments = whisper.transcribe_file(master, final_model, self.settings.effective_threads(),
                                                self.settings.language, self.workdir,
                                                vad_model=self.engine.vad_model)
+            segments = [whisper.Segment(seg.start, seg.end, self.corrector.apply(seg.text)) for seg in segments]
             text = whisper.render_transcript(segments, self.settings.timestamps)
             if text.strip():
                 transcript_path.write_text(text)
