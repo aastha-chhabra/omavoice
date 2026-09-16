@@ -2,6 +2,19 @@
 
 All notable changes to Omavoice. Dates are the day the tag was cut.
 
+## 0.3.15 - 2026-09-16
+
+- **Linux and tech vocabulary built in**, alongside Omarchy: PipeWire,
+  systemd, pacman, the AUR, tmux, btop, Btrfs, Alacritty, Ghostty, GitHub,
+  Kubernetes, Ollama, Tailscale, Cloudflare, Neovim and more, each with the
+  ways whisper actually mishears it.
+- Known terms also get their spelling normalised, so "github" becomes GitHub
+  and "cpu" becomes CPU.
+- Nothing inside a domain, a path, an email address or a hyphenated word is
+  touched, and mishearings that are ordinary words ("pseudo", "cloud", "quick
+  shell", "flat pack") are deliberately left out. Checked against a real
+  14,000-word meetup transcript: every change it made was correct.
+
 ## 0.3.14 - 2026-09-16
 
 - **Words whisper keeps mishearing are corrected.** "Omaki", "Omarchi" and

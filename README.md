@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/nixfred/omavoice/releases"><img alt="Version" src="https://img.shields.io/badge/version-0.3.14-e01b24?style=for-the-badge"></a>
+  <a href="https://github.com/nixfred/omavoice/releases"><img alt="Version" src="https://img.shields.io/badge/version-0.3.15-e01b24?style=for-the-badge"></a>
   <a href="https://github.com/nixfred/omavoice/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/nixfred/omavoice/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-ffd166?style=for-the-badge"></a>
   <img alt="Arch Linux" src="https://img.shields.io/badge/Arch_Linux-PKGBUILD-1793d1?style=for-the-badge&logo=archlinux&logoColor=white">
@@ -141,7 +141,11 @@ scripts/download-model.sh small.en
 Whisper has never heard of most of what Omarchy people talk about, so it
 guesses: "Omaki", "Omarchi", "Amarty". Omavoice rewrites known mishearings to
 the word that was meant, whole words only, in live captions and the saved
-transcript. Omarchy and Hyprland are built in. Add your own in
+transcript. Omarchy, Linux and general tech vocabulary are built in: Hyprland,
+PipeWire, systemd, pacman, tmux, Btrfs, GitHub, Kubernetes, Ollama, Tailscale
+and more, and known terms get their spelling fixed too ("github" becomes
+GitHub). Nothing inside a domain, path or hyphenated word is touched, and
+mishearings that are real words ("pseudo" for sudo) are left alone. Add your own in
 `~/.config/omavoice/config.json`:
 
 ```json

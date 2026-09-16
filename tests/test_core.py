@@ -691,3 +691,45 @@ class VocabularyTests(unittest.TestCase):
             self.assertEqual(Settings.load(path).vocabulary, {"OATLUG": ["oat lug"]})
             path.write_text('{"vocabulary": "wrong type"}')
             self.assertEqual(Settings.load(path).vocabulary, {})
+
+
+class TechVocabularyTests(unittest.TestCase):
+    def test_linux_and_tech_terms(self):
+        from omavoice.vocabulary import Corrector
+        fix = Corrector().apply
+        self.assertEqual(fix("I use Arch Linox with Pipe wire and System D"),
+                         "I use Arch Linux with PipeWire and systemd")
+        self.assertEqual(fix("installed it with Pac-Man from the A U R"), "installed it with pacman from the AUR")
+        self.assertEqual(fix("run it in T mux and watch B top"), "run it in tmux and watch btop")
+        self.assertEqual(fix("push it to Git hub and deploy on Cooper Netties"),
+                         "push it to GitHub and deploy on Kubernetes")
+        self.assertEqual(fix("my Olama box behind Tail scale and Cloud flare"),
+                         "my Ollama box behind Tailscale and Cloudflare")
+
+    def test_spelling_is_normalised(self):
+        from omavoice.vocabulary import Corrector
+        fix = Corrector().apply
+        self.assertEqual(fix("the github api on my nvidia gpu over ssh"), "the GitHub API on my NVIDIA GPU over SSH")
+
+    def test_ordinary_words_and_phrases_are_left_alone(self):
+        from omavoice.vocabulary import Corrector
+        fix = Corrector().apply
+        for text in (
+            "that is pseudo code",
+            "save it to the cloud",
+            "Jason said hi",
+            "run a quick shell command",
+            "a fast fetch from the server",
+            "flat pack furniture",
+            "a baby walker",
+            "the hub of the wheel",
+        ):
+            self.assertEqual(fix(text), text)
+
+    def test_domains_paths_and_hyphenations_are_not_touched(self):
+        from omavoice.vocabulary import Corrector
+        fix = Corrector().apply
+        for text in ("go to omarchy.nixfred.com", "see github.com/nixfred", "mail fred@github",
+                     "the linux-firmware package", "cd ~/src/linux/drivers"):
+            self.assertEqual(fix(text), text)
+        self.assertEqual(fix("I run Omaki."), "I run Omarchy.")
