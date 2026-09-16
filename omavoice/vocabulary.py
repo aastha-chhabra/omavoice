@@ -23,7 +23,7 @@ import re
 OMARCHY = {
     "Omarchy": [
         "Omaki", "Omarchi", "Omarchie", "Omarchic", "Omachi", "Omachy", "Omarze",
-        "Omarky", "Omarkey", "O'Marchy", "O Marchy", "Amarty",
+        "Omarky", "Omarkey", "O'Marchy", "O Marchy", "Amarty", "Amachi",
     ],
     "Hyprland": ["Hyperland", "Hyper land", "Hyperlands"],
     "Waybar": ["Way bar"],
@@ -55,6 +55,9 @@ LINUX = {
 }
 
 TECH = {
+    "Claude Code": ["Clock code", "Clawed code", "Claude code"],
+    "OSINT": ["OSIT", "O S I N T"],
+    "Wispr Flow": ["Whisper flow", "Whisperflow", "Wisper flow"],
     "GitHub": ["Git hub", "Get hub", "Github"],
     "GitLab": ["Git lab", "Gitlab"],
     "Kubernetes": ["Cooper Netties", "Kuber Nettes", "Kubernetties", "Kubernettes"],

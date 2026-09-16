@@ -733,3 +733,67 @@ class TechVocabularyTests(unittest.TestCase):
                      "the linux-firmware package", "cd ~/src/linux/drivers"):
             self.assertEqual(fix(text), text)
         self.assertEqual(fix("I run Omaki."), "I run Omarchy.")
+
+
+class FinalPassWithoutVadTests(unittest.TestCase):
+    def test_final_pass_does_not_decode_through_vad(self):
+        # Decoding through VAD dropped the far side of a phone call: 1050 words
+        # against 2143 for the same audio decoded whole.
+        from omavoice import whisper
+        with tempfile.TemporaryDirectory() as d:
+            work = Path(d)
+            raw = work / "master.raw"
+            raw.write_bytes(b"\x00\x00" * 16000)
+            (work / "final.json").write_text('{"transcription": []}')
+            done = mock.Mock(returncode=0, stdout="", stderr="")
+            with mock.patch.object(whisper, "raw_to_wav16k_file"), \
+                    mock.patch.object(whisper.subprocess, "run", return_value=done) as run:
+                whisper.transcribe_file(raw, whisper.Model(work / "ggml-base.en.bin"), 4, "en", work)
+            argv = run.call_args[0][0]
+            self.assertNotIn("--vad", argv)
+            self.assertEqual(argv[argv.index("-mc") + 1], "0")
+
+
+class PhantomFilterTests(unittest.TestCase):
+    """Levels mirror a real call: phantoms near 0.02, quiet real speech near 0.1."""
+
+    def _audio(self, spans):
+        audio = bytearray()
+        for seconds, amplitude in spans:
+            audio += tone(seconds, amplitude=amplitude) if amplitude else silence(seconds)
+        return bytes(audio)
+
+    def test_a_stock_phrase_over_silence_goes(self):
+        from omavoice.whisper import Segment, drop_silent_phantoms
+        audio = self._audio([(1, 0.3), (1, 0.3), (1, 0.3), (1, 0.01)])
+        segs = [Segment(0, 1, "Hello there."), Segment(1, 2, "How are you?"),
+                Segment(2, 3, "Fine thanks."), Segment(3, 4, "Thank you.")]
+        self.assertEqual([s.text for s in drop_silent_phantoms(segs, audio)],
+                         ["Hello there.", "How are you?", "Fine thanks."])
+
+    def test_a_real_thank_you_is_kept(self):
+        from omavoice.whisper import Segment, drop_silent_phantoms
+        audio = self._audio([(1, 0.3), (1, 0.3), (1, 0.3)])
+        segs = [Segment(0, 1, "Here it is."), Segment(1, 2, "Thank you."), Segment(2, 3, "Sure.")]
+        self.assertEqual(len(drop_silent_phantoms(segs, audio)), 3)
+
+    def test_a_quiet_real_sentence_is_never_a_candidate(self):
+        from omavoice.whisper import Segment, drop_silent_phantoms
+        audio = self._audio([(1, 0.3), (1, 0.3), (1, 0.01)])
+        segs = [Segment(0, 1, "Loud line."), Segment(1, 2, "Another."), Segment(2, 3, "He was a CPA.")]
+        self.assertEqual(len(drop_silent_phantoms(segs, audio)), 3)
+
+    def test_span_level_ignores_a_single_click(self):
+        click = silence(0.95) + tone(0.05, amplitude=0.9)
+        self.assertLess(pcm.span_level(click, 0, 1), 0.05)
+        self.assertGreater(pcm.span_level(tone(1, amplitude=0.2), 0, 1), 0.15)
+
+
+class CallVocabularyTests(unittest.TestCase):
+    def test_terms_from_the_jr_call(self):
+        from omavoice.vocabulary import Corrector
+        fix = Corrector().apply
+        self.assertEqual(fix("setting up a clock code"), "setting up a Claude Code")
+        self.assertEqual(fix("10X past that now with Amachi"), "10X past that now with Omarchy")
+        self.assertEqual(fix("almost like OSIT for business"), "almost like OSINT for business")
+        self.assertEqual(fix("hook him up with whisper flow"), "hook him up with Wispr Flow")

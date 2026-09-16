@@ -2,6 +2,18 @@
 
 All notable changes to Omavoice. Dates are the day the tag was cut.
 
+## 0.3.16 - 2026-09-16
+
+- **The saved transcript no longer loses the quiet side of a conversation.**
+  The final pass decoded through voice activity detection, which heard a phone
+  call's far side as silence and skipped it. On a real 13-minute call that meant
+  1,050 words saved out of 2,142 spoken. The whole recording is decoded now,
+  with the same zero loops.
+- Stock phrases whisper invents over silence ("Thank you.", "Bye.") are removed
+  only when the audio under them is far quieter than the rest of the recording.
+  A real sentence is never a candidate, however quiet.
+- Vocabulary: Claude Code, OSINT, Wispr Flow, and "Amachi" for Omarchy.
+
 ## 0.3.15 - 2026-09-16
 
 - **Linux and tech vocabulary built in**, alongside Omarchy: PipeWire,

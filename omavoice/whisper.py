@@ -388,8 +388,7 @@ class Segment:
     text: str
 
 
-def transcribe_file(raw_path: Path, model: Model, threads: int, language: str, workdir: Path,
-                    vad_model: Path | None = None) -> list:
+def transcribe_file(raw_path: Path, model: Model, threads: int, language: str, workdir: Path) -> list:
     """Run whisper-cli over a whole raw master. Returns a list of Segment."""
     wav_path = workdir / "final16k.wav"
     try:
@@ -403,9 +402,15 @@ def transcribe_file(raw_path: Path, model: Model, threads: int, language: str, w
     # -mc 0: decode each segment without the previous text as context. With
     # context, whisper falls into loops inside real speech, not just over
     # silence: on a noisy 90-minute meeting it repeated one sentence 7 times
-    # where the context-free pass wrote it once. VAD alone does not stop that.
+    # where the context-free pass wrote it once.
+    #
+    # No --vad. On a 13-minute phone call recorded from a laptop microphone,
+    # Silero heard 284 of 806 seconds as speech and missed most of the far
+    # side: decoding through VAD produced 1050 words, decoding everything
+    # produced 2143 with the same zero loops. Even used only as a filter it
+    # would have deleted 22 real lines. Silence is handled below instead.
     cmd = ["whisper-cli", "-m", str(model.path), "-t", str(threads), "-l", lang, "-np", "-sns",
-           "-mc", "0", *vad_args(vad_model), "-oj", "-of", str(out_prefix), "-f", str(wav_path)]
+           "-mc", "0", "-oj", "-of", str(out_prefix), "-f", str(wav_path)]
     proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
     json_path = out_prefix.with_suffix(".json")
     if proc.returncode != 0 or not json_path.exists():
@@ -422,11 +427,38 @@ def transcribe_file(raw_path: Path, model: Model, threads: int, language: str, w
             end=float(offsets.get("to", 0)) / 1000.0,
             text=text,
         ))
-    # Deliberately no de-duplication. Repeated identical segments used to be
-    # whisper looping on silence, but the VAD pass above means it is no longer
-    # handed silence, and people genuinely do repeat themselves. Collapsing
-    # them deleted real speech: three identical sentences became one.
-    return segments
+    # Deliberately no de-duplication: people genuinely repeat themselves, and
+    # collapsing identical segments once turned three spoken sentences into one.
+    try:
+        audio = raw_path.read_bytes()
+    except OSError:
+        return segments
+    return drop_silent_phantoms(segments, audio)
+
+
+PHANTOM_LEVEL_FACTOR = 0.2
+
+
+def drop_silent_phantoms(segments: list, audio: bytes) -> list:
+    """Remove the stock phrases whisper invents over silence, and only those.
+
+    Handed near-silence, whisper writes "Thank you." or "Bye." A segment goes
+    only when both are true: its text is one of those stock phrases, and the
+    audio under it is far quieter than the recording's typical line. A real
+    sentence is never a candidate, however quiet. On a real call the phantoms
+    measured 0.016 to 0.024 against a median line of 0.161, while the quiet
+    far side of the call never dropped below 0.055.
+    """
+    if not segments or not audio:
+        return segments
+    levels = [pcm.span_level(audio, seg.start, seg.end) for seg in segments]
+    ordered = sorted(levels)
+    median = ordered[len(ordered) // 2]
+    if median <= 0:
+        return segments
+    threshold = median * PHANTOM_LEVEL_FACTOR
+    return [seg for seg, level in zip(segments, levels, strict=True)
+            if not (seg.text.lower().strip() in HALLUCINATIONS and level < threshold)]
 
 
 def render_transcript(segments: list, timestamps: bool) -> str:

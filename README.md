@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/nixfred/omavoice/releases"><img alt="Version" src="https://img.shields.io/badge/version-0.3.15-e01b24?style=for-the-badge"></a>
+  <a href="https://github.com/nixfred/omavoice/releases"><img alt="Version" src="https://img.shields.io/badge/version-0.3.16-e01b24?style=for-the-badge"></a>
   <a href="https://github.com/nixfred/omavoice/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/nixfred/omavoice/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-ffd166?style=for-the-badge"></a>
   <img alt="Arch Linux" src="https://img.shields.io/badge/Arch_Linux-PKGBUILD-1793d1?style=for-the-badge&logo=archlinux&logoColor=white">
@@ -214,7 +214,10 @@ flowchart LR
    detector rather than run unguarded.
 3. **Finish.** ffmpeg encodes the master into the chosen format, the live text is written
    as a provisional transcript, and `whisper-cli` produces the final transcript in the
-   background with Silero voice activity detection. The app holds itself alive until
+   background from the whole recording, each segment decoded without earlier text as
+   context so it cannot fall into a loop. Voice activity detection is deliberately not
+   used here: it hears the far side of a call as silence. Stock phrases invented over
+   silence are dropped only where the audio is near-silent. The app holds itself alive until
    that is done, even if you close the window.
 
 If Omavoice is killed part-way through a recording, the audio captured up to

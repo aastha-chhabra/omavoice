@@ -399,12 +399,9 @@ class Session:
             return
 
         self.cb["on_status"](f"Transcribing {audio_path.name} with {final_model.name}…")
-        if self.engine.vad_model is None:
-            self.engine.vad_model = whisper.ensure_vad_model()
         try:
             segments = whisper.transcribe_file(master, final_model, self.settings.effective_threads(),
-                                               self.settings.language, self.workdir,
-                                               vad_model=self.engine.vad_model)
+                                               self.settings.language, self.workdir)
             segments = [whisper.Segment(seg.start, seg.end, self.corrector.apply(seg.text)) for seg in segments]
             text = whisper.render_transcript(segments, self.settings.timestamps)
             if text.strip():

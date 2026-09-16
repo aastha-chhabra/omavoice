@@ -46,6 +46,21 @@ def bytes_to_seconds(n: int) -> float:
     return n / BYTES_PER_SECOND
 
 
+def span_level(pcm: bytes, start_seconds: float, end_seconds: float, window_ms: int = 100) -> float:
+    """How loud a stretch is: the 90th-percentile peak of its 100 ms windows.
+
+    A percentile rather than the maximum, so one click does not make a silent
+    stretch look like speech.
+    """
+    lo = max(0, seconds_to_bytes(start_seconds))
+    hi = min(len(pcm) - len(pcm) % BYTES_PER_SAMPLE, seconds_to_bytes(end_seconds))
+    window = seconds_to_bytes(window_ms / 1000.0)
+    if window <= 0 or hi - lo < BYTES_PER_SAMPLE:
+        return 0.0
+    peaks = sorted(peak(pcm[i:i + window]) for i in range(lo, max(hi - window, lo + 1), window))
+    return peaks[int(len(peaks) * 0.9)] if peaks else 0.0
+
+
 def find_cut_point(pcm: bytes, search_seconds: float = 1.5, window_ms: int = 60) -> int:
     """Byte offset of the quietest short window inside the tail of `pcm`.
 
